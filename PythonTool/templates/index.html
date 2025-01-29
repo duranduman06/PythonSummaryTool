@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text Summarizer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-robot"></i> Text Summarizer</h1>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('text')">
+                <i class="fas fa-file-alt"></i> Text Input
+            </div>
+            <div class="tab" onclick="switchTab('url')">
+                <i class="fas fa-link"></i> URL Input
+            </div>
+        </div>
+
+        <form method="POST">
+            <input type="hidden" name="active_tab" id="active_tab" value="text">
+
+            <div id="text-input" class="tab-content active">
+                <div class="form-group">
+                    <label for="text">Enter your text:</label>
+                    <textarea
+                        name="text"
+                        id="text"
+                        placeholder="Paste your text here to summarize..."
+                    >{{ original_text if original_text and not url else '' }}</textarea>
+                </div>
+            </div>
+
+            <div id="url-input" class="tab-content">
+                <div class="form-group">
+                    <label for="url">Enter Wikipedia URL</label>
+                    <input
+                        type="url"
+                        name="url"
+                        id="url"
+                        placeholder="https://en.wikipedia.org/wiki/..."
+                        value="{{ url if url else '' }}"
+                    >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="num_sentences">Number of sentences in summary:</label>
+                <input
+                    type="number"
+                    name="num_sentences"
+                    id="num_sentences"
+                    min="1"
+                    value="{{ request.form.get('num_sentences', '3') }}"
+                >
+            </div>
+
+            <div class="form-group method-select">
+                <label for="method">
+                    <i class="fas fa-cogs"></i> Summarization Method:
+                </label>
+                <div class="select-wrapper">
+                    <select name="method" id="method" class="form-control">
+                        <option value="tfidf" {{ 'selected' if request.form.get('method') == 'tfidf' else '' }}>
+                            <i class="fas fa-chart-bar"></i> TF-IDF
+                        </option>
+                        <option value="lsa" {{ 'selected' if request.form.get('method') == 'lsa' else '' }}>
+                            <i class="fas fa-chart-line"></i> LSA
+                        </option>
+                        <option value="textrank" {{ 'selected' if request.form.get('method') == 'textrank' else '' }}>
+                            <i class="fas fa-chart-line"></i> TextRank
+                        </option>
+                    </select>
+                    <i class="fas fa-chevron-down select-arrow"></i>
+                </div>
+            </div>
+
+            <button type="submit"><i class="fas fa-magic"></i> Generate Summary</button>
+        </form>
+
+        {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        {% if summary %}
+        <div class="result">
+            <h2>Summary:</h2>
+            <p>{{ summary }}</p>
+            {% if original_text %}
+            <h2>Original Text:</h2>
+            <p>{{ original_text }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+        document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
+        document.getElementById(`${tabName}-input`).classList.add('active');
+
+        document.getElementById('active_tab').value = tabName;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const activeTab = '{{ request.form.get("active_tab", "text") }}';
+        switchTab(activeTab);
+    });
+    </script>
+</body>
+</html>

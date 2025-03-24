@@ -180,15 +180,15 @@ button:active {
     body {
         padding: 15px;
     }
-    
+
     .container {
         padding: 20px;
     }
-    
+
     .tabs {
         flex-wrap: wrap;
     }
-    
+
     .tab {
         padding: 10px 15px;
     }
@@ -255,3 +255,4 @@ button:active {
     color: #3498db;
     pointer-events: none;
 }
+

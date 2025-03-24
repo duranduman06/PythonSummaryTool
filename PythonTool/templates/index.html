@@ -63,13 +63,13 @@
                 <div class="select-wrapper">
                     <select name="method" id="method" class="form-control">
                         <option value="tfidf" {{ 'selected' if request.form.get('method') == 'tfidf' else '' }}>
-                            <i class="fas fa-chart-bar"></i> TF-IDF
+                             TF-IDF
                         </option>
                         <option value="lsa" {{ 'selected' if request.form.get('method') == 'lsa' else '' }}>
-                            <i class="fas fa-chart-line"></i> LSA
+                             LSA
                         </option>
                         <option value="textrank" {{ 'selected' if request.form.get('method') == 'textrank' else '' }}>
-                            <i class="fas fa-chart-line"></i> TextRank
+                             TextRank
                         </option>
                     </select>
                     <i class="fas fa-chevron-down select-arrow"></i>
